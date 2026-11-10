@@ -1,8 +1,4 @@
-
-name: Set up Android SDK
-  uses: android-actions/setup-android@v3
-  with:
-    packages: 'platform-tools'
+name: Build Study System APK
 
 on:
   push:
@@ -30,23 +26,21 @@ jobs:
 
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
+        with:
+          packages: 'platform-tools'
 
       - name: Extract Android project
         run: |
-          mkdir extracted
-          unzip -q StudySystem_Android_Phone_Build_v1.zip -d extracted
-          PROJECT_DIR=$(dirname "$(find extracted -name settings.gradle -print -quit)")
-          echo "PROJECT_DIR=$PROJECT_DIR" >> $GITHUB_ENV
+          unzip -o StudySystem_Android_Phone_Build_v1.zip -d extracted
 
-      - name: Build APK
+      - name: Build debug APK
         run: |
-          cd "$PROJECT_DIR"
+          cd extracted
           gradle assembleDebug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: StudySystem-APK
-          path: extracted/**/app/build/outputs/apk/debug/*.apk
-
+          name: Study-System-APK
+          path: extracted/app/build/outputs/apk/debug/*.apk
           
