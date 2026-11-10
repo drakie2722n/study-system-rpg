@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#07111f">
+<meta name="description" content="Study System — turn studying into an RPG adventure.">
+<link rel="manifest" href="manifest.json">
+<title>Study System</title>
+<style>
+:root{--bg:#07111f;--panel:#101f33;--panel2:#142944;--text:#edf6ff;--muted:#9ab0c9;--accent:#55baff;--accent2:#9b7cff;--line:#29435f;--good:#48d6a1;--danger:#ff7888}
+[data-theme="purple"]{--bg:#100b1d;--panel:#211633;--panel2:#302047;--text:#f7efff;--muted:#c1afd9;--accent:#bd8cff;--accent2:#ff8bd4;--line:#4a3565;--good:#66dfb5}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#142c48 0,var(--bg) 55%);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;min-height:100vh}
+[data-theme="purple"] body{background:radial-gradient(ellipse at top,#39204c 0,var(--bg) 58%)}
+button,input,select{font:inherit}button{cursor:pointer}
+.app{max-width:760px;margin:auto;padding:16px 14px 100px}
+header{display:flex;justify-content:space-between;align-items:center;margin:8px 0 18px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:900;letter-spacing:1.5px}.sigil{width:38px;height:38px;border:1px solid var(--accent);border-radius:12px;display:grid;place-items:center;color:var(--accent);font-size:21px;box-shadow:0 0 20px #55baff35}
+.eyebrow{font-size:10px;color:var(--muted);letter-spacing:2px;font-weight:800}
+.iconbtn,.btn{border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:12px;padding:10px 13px}
+.btn.primary{background:linear-gradient(135deg,var(--accent),var(--accent2));border:0;color:#06101c;font-weight:900}
+.btn.small{padding:8px 10px;font-size:12px}
+.hero{background:linear-gradient(130deg,#102b49dd,#111b31f2);border:1px solid var(--line);border-radius:22px;padding:18px;position:relative;overflow:hidden}
+[data-theme="purple"] .hero{background:linear-gradient(130deg,#3a2055dd,#1b142bf2)}
+.hero:after{content:"✦";position:absolute;right:18px;top:4px;font-size:100px;color:var(--accent);opacity:.12}
+.hero-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.rank{font-size:38px;font-weight:1000;color:var(--accent);line-height:1}
+h1{font-size:22px;margin:6px 0 4px}.sub{font-size:12px;color:var(--muted)}
+.xprow{display:flex;justify-content:space-between;margin:18px 0 8px;font-size:12px;font-weight:800}.track{height:9px;border-radius:20px;background:#ffffff18;overflow:hidden}.fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:20px;width:0%;transition:width .25s}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0 20px}.stat{background:var(--panel);border:1px solid var(--line);border-radius:15px;padding:12px 8px}.stat b{display:block;font-size:18px;color:var(--accent)}.stat span{font-size:10px;color:var(--muted)}
+.section-head{display:flex;align-items:center;justify-content:space-between;margin:22px 2px 10px}.section-head h2{font-size:15px;letter-spacing:1px;margin:0}.muted{color:var(--muted);font-size:12px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:14px;margin:9px 0}.quest{display:flex;gap:12px;align-items:center}.quest .qmain{flex:1;min-width:0}.quest strong{font-size:13px;display:block}.quest small{font-size:11px;color:var(--muted)}.xp{font-size:11px;color:var(--accent);font-weight:900;white-space:nowrap}.check{width:27px;height:27px;border-radius:9px;border:1px solid var(--accent);background:transparent;color:var(--good);font-size:16px}.done{opacity:.55}.done strong{text-decoration:line-through}
+.pills{display:flex;gap:7px;flex-wrap:wrap}.pill{border:1px solid var(--line);border-radius:30px;background:var(--panel);padding:8px 12px;color:var(--muted);font-size:11px}.pill.active{background:var(--accent);color:#07111f;border-color:var(--accent);font-weight:900}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:9px}.tile{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:14px}.tile b{display:block;margin:7px 0 3px}.tile p{margin:0;color:var(--muted);font-size:11px;line-height:1.5}
+input,select{width:100%;background:var(--panel2);border:1px solid var(--line);border-radius:11px;color:var(--text);padding:12px;outline:none}label{font-size:11px;color:var(--muted);display:block;margin:9px 0 5px}
+.formrow{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.nav{position:fixed;bottom:0;left:0;right:0;z-index:5;background:#07111fee;backdrop-filter:blur(14px);border-top:1px solid var(--line);display:flex;justify-content:center;padding:8px max(10px,env(safe-area-inset-right)) calc(8px + env(safe-area-inset-bottom))}
+[data-theme="purple"] .nav{background:#100b1dee}.navinner{display:flex;width:min(760px,100%);justify-content:space-around}.nav button{background:none;border:0;color:var(--muted);font-size:10px;padding:6px 12px}.nav button span{display:block;font-size:19px;margin-bottom:2px}.nav button.active{color:var(--accent);font-weight:900}
+.page{display:none}.page.active{display:block}
+.notice{border:1px dashed var(--line);border-radius:14px;padding:13px;color:var(--muted);font-size:11px;line-height:1.5}
+.timer{text-align:center;padding:24px}.timer-num{font-size:56px;font-weight:900;letter-spacing:2px;color:var(--accent);margin:12px}
+.badge{font-size:9px;letter-spacing:1px;border:1px solid var(--accent);color:var(--accent);padding:4px 7px;border-radius:20px;font-weight:900}
+.toast{position:fixed;top:18px;left:50%;transform:translateX(-50%);background:var(--good);color:#061b15;padding:11px 16px;border-radius:12px;font-size:12px;font-weight:900;display:none;z-index:10}
+footer{text-align:center;color:var(--muted);font-size:10px;margin:25px 0}
+@media(max-width:390px){.stats{grid-template-columns:repeat(2,1fr)}.hero{padding:15px}.rank{font-size:32px}}
+</style>
+</head>
+<body>
+<div class="toast" id="toast"></div>
+<div class="app">
+<header>
+ <div class="brand"><div class="sigil">✦</div><div><div>STUDY SYSTEM</div><div class="eyebrow">AWAKEN YOUR POTENTIAL</div></div></div>
+ <button class="iconbtn" id="themeBtn" aria-label="Switch theme">◐</button>
+</header>
+
+<section class="page active" id="home">
+ <div class="hero">
+  <div class="hero-top"><div><div class="eyebrow">AWAKENED STUDENT</div><h1 id="rankTitle">E-RANK SCHOLAR</h1><div class="sub">Your next level is waiting.</div></div><div class="rank" id="rankLetter">E</div></div>
+  <div class="xprow"><span>LEVEL <b id="level">1</b></span><span><b id="xp">0</b> / <span id="nextXp">100</span> XP</span></div>
+  <div class="track"><div class="fill" id="xpFill"></div></div>
+ </div>
+ <div class="stats">
+  <div class="stat"><b id="statInt">1</b><span>INTELLIGENCE</span></div><div class="stat"><b id="statFocus">1</b><span>FOCUS</span></div><div class="stat"><b id="statDis">1</b><span>DISCIPLINE</span></div><div class="stat"><b id="statStreak">0</b><span>DAY STREAK</span></div>
+ </div>
+ <div class="section-head"><h2>ACTIVE QUESTS</h2><span class="muted" id="questCount">0 CLEARED</span></div>
+ <div id="homeQuests"></div>
+ <div class="grid2">
+  <div class="tile"><div>⚔️</div><b>PYQ Dungeon</b><p>Board and JEE previous-year practice quests.</p><button class="btn small" onclick="showPage('pyq')">Enter dungeon</button></div>
+  <div class="tile"><div>⏱️</div><b>Focus Chamber</b><p>Timed sessions to train your focus.</p><button class="btn small" onclick="showPage('focus')">Start focus</button></div>
+ </div>
+</section>
+
+<section class="page" id="quests">
+ <div class="section-head"><h2>QUEST BOARD</h2><span class="badge">DAILY MISSIONS</span></div>
+ <div class="pills" id="subjectPills"><button class="pill active" data-sub="All">All</button><button class="pill" data-sub="Physics">Physics</button><button class="pill" data-sub="Chemistry">Chemistry</button><button class="pill" data-sub="Mathematics">Maths</button><button class="pill" data-sub="Boards">Boards</button><button class="pill" data-sub="JEE">JEE</button></div>
+ <div id="questList"></div>
+ <div class="card">
+  <div class="section-head"><h2>CREATE A QUEST</h2></div>
+  <label>Quest title</label><input id="customTitle" placeholder="e.g. Revise electrostatics">
+  <div class="formrow"><div><label>Subject</label><select id="customSubject"><option>Physics</option><option>Chemistry</option><option>Mathematics</option><option>Boards</option><option>JEE</option><option>Other</option></select></div><div><label>Reward XP</label><select id="customXP"><option>50</option><option>80</option><option>100</option><option>150</option><option>200</option></select></div></div>
+  <button class="btn primary" style="width:100%;margin-top:12px" onclick="addCustomQuest()">+ Add custom quest</button>
+ </div>
+</section>
+
+<section class="page" id="pyq">
+ <div class="section-head"><h2>PYQ DUNGEON</h2><span class="badge">SPECIAL QUESTS</span></div>
+ <div class="notice">Choose your exam, subject and chapter. Log your practice and earn XP. This version includes quest tracking, not a bundled archive of official question papers. Use your own or officially sourced PYQ material for the questions.</div>
+ <div class="pills" style="margin:14px 0"><button class="pill active" data-exam="JEE Main">JEE MAIN</button><button class="pill" data-exam="CBSE Boards">CBSE BOARDS</button></div>
+ <div class="formrow"><div><label>Subject</label><select id="pyqSubject"><option>Physics</option><option>Chemistry</option><option>Mathematics</option></select></div><div><label>Year / session</label><select id="pyqYear"><option>2026</option><option>2025</option><option>2024</option><option>2023</option><option>2022</option><option>2021</option><option>Older papers</option></select></div></div>
+ <label>Chapter / topic</label><input id="pyqChapter" placeholder="e.g. Current Electricity">
+ <div class="formrow"><div><label>Questions attempted</label><input id="pyqAttempt" type="number" min="1" value="15"></div><div><label>Correct answers</label><input id="pyqCorrect" type="number" min="0" value="10"></div></div>
+ <button class="btn primary" style="width:100%;margin-top:12px" onclick="logPYQ()">Clear PYQ quest · earn XP</button>
+ <div class="section-head"><h2>PYQ QUEST HISTORY</h2><span class="muted" id="pyqTotal">0 QUESTIONS</span></div>
+ <div id="pyqHistory"></div>
+</section>
+
+<section class="page" id="focus">
+ <div class="section-head"><h2>FOCUS CHAMBER</h2><span class="badge">TRAIN YOUR FOCUS</span></div>
+ <div class="card timer"><div class="eyebrow">DEEP WORK SESSION</div><div class="timer-num" id="timer">25:00</div><div class="muted" id="timerLabel">Ready when you are</div><div class="pills" style="justify-content:center;margin:18px 0"><button class="pill active" data-min="25">25 MIN</button><button class="pill" data-min="45">45 MIN</button><button class="pill" data-min="60">60 MIN</button></div><button class="btn primary" id="timerStart" onclick="toggleTimer()">Start focus</button> <button class="btn" onclick="resetTimer()">Reset</button></div>
+ <div class="notice">Finish a focus session to earn 40 XP. Take breaks when needed. The timer keeps running while this screen is open.</div>
+</section>
+
+<section class="page" id="stats">
+ <div class="section-head"><h2>HUNTER RECORD</h2><span class="badge">YOUR PROGRESS</span></div>
+ <div class="grid2">
+  <div class="tile"><div class="eyebrow">TOTAL XP</div><b id="totalXP" style="font-size:25px;color:var(--accent)">0</b><p>Experience earned</p></div>
+  <div class="tile"><div class="eyebrow">QUESTS CLEARED</div><b id="totalDone" style="font-size:25px;color:var(--accent)">0</b><p>Missions completed</p></div>
+  <div class="tile"><div class="eyebrow">PYQ QUESTIONS</div><b id="totalQuestions" style="font-size:25px;color:var(--accent)">0</b><p>Questions attempted</p></div>
+  <div class="tile"><div class="eyebrow">ACCURACY</div><b id="accuracy" style="font-size:25px;color:var(--accent)">—</b><p>Across logged PYQs</p></div>
+ </div>
+ <div class="card"><div class="section-head"><h2>RANK LADDER</h2></div><div id="rankLadder"></div></div>
+ <button class="btn" style="width:100%" onclick="if(confirm('Reset all Study System progress on this device?'))resetAll()">Reset all progress</button>
+</section>
+<footer>STUDY SYSTEM · V1.0 · YOUR PROGRESS IS STORED ON THIS DEVICE</footer>
+</div>
+<nav class="nav"><div class="navinner">
+ <button class="active" data-page="home"><span>⌂</span>HOME</button><button data-page="quests"><span>☷</span>QUESTS</button><button data-page="pyq"><span>⚔</span>PYQ</button><button data-page="focus"><span>◷</span>FOCUS</button><button data-page="stats"><span>♜</span>STATS</button>
+</div></nav>
+<script>
+const defaults=[
+ {id:1,title:"Deep Study Session",desc:"Study one topic for 45 minutes",subject:"All",xp:100,done:false},
+ {id:2,title:"Question Hunter",desc:"Solve 20 practice questions",subject:"JEE",xp:80,done:false},
+ {id:3,title:"Memory Restoration",desc:"Revise yesterday's topics",subject:"Boards",xp:60,done:false},
+ {id:4,title:"Concept Forge",desc:"Learn and summarize one concept",subject:"Physics",xp:70,done:false},
+ {id:5,title:"Chemistry Alchemist",desc:"Practice 15 chemistry questions",subject:"Chemistry",xp:70,done:false},
+ {id:6,title:"Maths Combat",desc:"Solve 10 mathematics problems",subject:"Mathematics",xp:70,done:false}
+];
+let state=JSON.parse(localStorage.getItem("studySystemV1")||"null")||{xp:0,quests:defaults,pyqs:[],theme:"blue",streak:0};
+let activeSubject="All",exam="JEE Main",timerSeconds=1500,timerInterval=null,selectedMinutes=25;
+function save(){localStorage.setItem("studySystemV1",JSON.stringify(state));render()}
+function toast(msg){let t=document.getElementById("toast");t.textContent=msg;t.style.display="block";setTimeout(()=>t.style.display="none",1800)}
+function rankInfo(x){if(x>=2500)return["S","S-RANK SCHOLAR"];if(x>=1500)return["A","A-RANK SCHOLAR"];if(x>=900)return["B","B-RANK SCHOLAR"];if(x>=400)return["C","C-RANK SCHOLAR"];if(x>=100)return["D","D-RANK SCHOLAR"];return["E","E-RANK SCHOLAR"]}
+function showPage(p){document.querySelectorAll(".page").forEach(x=>x.classList.toggle("active",x.id===p));document.querySelectorAll(".nav button").forEach(x=>x.classList.toggle("active",x.dataset.page===p));render()}
+function toggleTheme(){state.theme=state.theme==="blue"?"purple":"blue";save()}
+document.getElementById("themeBtn").onclick=toggleTheme;
+document.querySelectorAll(".nav button").forEach(b=>b.onclick=()=>showPage(b.dataset.page));
+document.querySelectorAll("#subjectPills .pill").forEach(b=>b.onclick=()=>{activeSubject=b.dataset.sub;document.querySelectorAll("#subjectPills .pill").forEach(x=>x.classList.toggle("active",x===b));renderQuests()});
+document.querySelectorAll("[data-exam]").forEach(b=>b.onclick=()=>{exam=b.dataset.exam;document.querySelectorAll("[data-exam]").forEach(x=>x.classList.toggle("active",x===b))});
+function completeQuest(id){let q=state.quests.find(x=>x.id===id);if(!q||q.done)return;q.done=true;state.xp+=q.xp;toast("QUEST CLEARED · +"+q.xp+" XP");save()}
+function addCustomQuest(){let title=document.getElementById("customTitle").value.trim();if(!title){toast("Enter a quest title first");return}state.quests.unshift({id:Date.now(),title,desc:"Custom study mission",subject:document.getElementById("customSubject").value,xp:+document.getElementById("customXP").value,done:false});document.getElementById("customTitle").value="";save();toast("New quest added")}
+function renderQuests(){let list=state.quests.filter(q=>activeSubject==="All"||q.subject===activeSubject);document.getElementById("questList").innerHTML=list.map(q=>`<div class="card quest ${q.done?"done":""}"><button class="check" onclick="completeQuest(${q.id})">${q.done?"✓":"+"}</button><div class="qmain"><strong>${esc(q.title)}</strong><small>${esc(q.desc)} · ${esc(q.subject)}</small></div><span class="xp">+${q.xp} XP</span></div>`).join("")||'<div class="notice">No quests in this filter yet.</div>'}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function logPYQ(){let a=+document.getElementById("pyqAttempt").value,c=+document.getElementById("pyqCorrect").value,chapter=document.getElementById("pyqChapter").value.trim();if(!chapter||a<1||c<0||c>a){toast("Check chapter and question counts");return}let earned=Math.round(20+Math.min(a,50)*2+(c/a)*30);state.pyqs.unshift({id:Date.now(),exam,subject:document.getElementById("pyqSubject").value,year:document.getElementById("pyqYear").value,chapter,attempted:a,correct:c,xp:earned,date:new Date().toLocaleDateString()});state.xp+=earned;toast("PYQ QUEST CLEARED · +"+earned+" XP");save()}
+function renderPYQ(){let total=state.pyqs.reduce((s,p)=>s+p.attempted,0);document.getElementById("pyqTotal").textContent=total+" QUESTIONS";document.getElementById("pyqHistory").innerHTML=state.pyqs.map(p=>`<div class="card"><div class="quest"><div class="qmain"><strong>${esc(p.exam)} · ${esc(p.subject)}</strong><small>${esc(p.chapter)} · ${esc(p.year)} · ${esc(p.date)}</small><small>${p.correct}/${p.attempted} correct</small></div><span class="xp">+${p.xp} XP</span></div></div>`).join("")||'<div class="notice">No PYQ quests logged yet. Complete your first practice set above.</div>'}
+function render(){document.documentElement.dataset.theme=state.theme==="purple"?"purple":"blue";let [r,t]=rankInfo(state.xp),level=Math.floor(state.xp/100)+1,prog=state.xp%100;document.getElementById("rankLetter").textContent=r;document.getElementById("rankTitle").textContent=t;document.getElementById("level").textContent=level;document.getElementById("xp").textContent=prog;document.getElementById("nextXp").textContent=100;document.getElementById("xpFill").style.width=prog+"%";let done=state.quests.filter(q=>q.done).length;document.getElementById("questCount").textContent=done+" CLEARED";document.getElementById("statInt").textContent=1+Math.floor(state.xp/250);document.getElementById("statFocus").textContent=1+Math.floor(state.xp/300);document.getElementById("statDis").textContent=1+Math.floor(done/3);document.getElementById("statStreak").textContent=state.streak;document.getElementById("homeQuests").innerHTML=state.quests.filter(q=>!q.done).slice(0,3).map(q=>`<div class="card quest"><div class="qmain"><strong>${esc(q.title)}</strong><small>${esc(q.desc)}</small></div><span class="xp">+${q.xp} XP</span><button class="check" onclick="completeQuest(${q.id})">+</button></div>`).join("")||'<div class="notice">All quests cleared. Add a custom quest to continue.</div>';renderQuests();renderPYQ();document.getElementById("totalXP").textContent=state.xp;document.getElementById("totalDone").textContent=done;let total=state.pyqs.reduce((s,p)=>s+p.attempted,0),correct=state.pyqs.reduce((s,p)=>s+p.correct,0);document.getElementById("totalQuestions").textContent=total;document.getElementById("accuracy").textContent=total?Math.round(correct/total*100)+"%":"—";document.getElementById("rankLadder").innerHTML=[["E",0],["D",100],["C",400],["B",900],["A",1500],["S",2500]].map(([n,v])=>`<div class="quest" style="justify-content:space-between;padding:8px 0"><strong style="color:${r===n?'var(--accent)':'var(--muted)'}">${n}-RANK ${r===n?"· CURRENT":""}</strong><small>${v.toLocaleString()} XP</small></div>`).join("")}
+function toggleTimer(){let b=document.getElementById("timerStart");if(timerInterval){clearInterval(timerInterval);timerInterval=null;b.textContent="Resume focus";document.getElementById("timerLabel").textContent="Paused";return}b.textContent="Pause";document.getElementById("timerLabel").textContent="Focus session in progress";timerInterval=setInterval(()=>{timerSeconds--;document.getElementById("timer").textContent=fmt(timerSeconds);if(timerSeconds<=0){clearInterval(timerInterval);timerInterval=null;b.textContent="Start focus";state.xp+=40;toast("FOCUS QUEST CLEARED · +40 XP");save();resetTimer()}},1000)}
+function fmt(s){return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0")}
+function resetTimer(){
+ if(timerInterval)clearInterval(timerInterval);
+ timerInterval=null;timerSeconds=selectedMinutes*60;
+ document.getElementById("timer").textContent=fmt(timerSeconds);
+ document.getElementById("timerStart").textContent="Start focus";
+ document.getElementById("timerLabel").textContent="Ready when you are";
+}
+document.querySelectorAll("[data-min]").forEach(b=>b.onclick=()=>{
+ selectedMinutes=+b.dataset.min;
+ document.querySelectorAll("[data-min]").forEach(x=>x.classList.toggle("active",x===b));
+ resetTimer();
+});
+function resetAll(){
+ state={xp:0,quests:defaults.map(q=>({...q})),pyqs:[],theme:state.theme,streak:0};
+ save();toast("Progress reset");
+}
+render();
+if("serviceWorker" in navigator){navigator.serviceWorker.register("./sw.js").catch(()=>{});}
+</script>
+</body>
+</html>
